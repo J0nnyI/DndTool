@@ -1,0 +1,42 @@
+.hit {
+  background: green;
+}
+
+.number {
+  width: 40px;
+}
+.editor {
+  background: lightgray;
+  margin: 4px;
+  padding: 4px;
+}
+tr.miss {
+  background-color: red;
+}
+.set-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-items: flex-start;
+  max-width: 100%;
+}
+.set {
+  display: flex;
+  flex-direction: column;
+  width: auto;
+  min-width: 260px;
+  box-shadow: 0 0 3px gray;
+  margin: 4px;
+  padding: 4px;
+
+  &.expired {
+    background: lightcoral;
+  }
+}
+tr:nth-child(even):not(.miss) {
+  background: lightgray;
+}
+td {
+  min-width: 30px;
+  text-align: center;
+}

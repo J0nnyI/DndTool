@@ -1,0 +1,68 @@
+<div>
+Spellsave-dc: constitution, schaden/2, min 10<br/>
+
+  Round: {{ round }}<br />
+  <label>AC</label>
+  <input type="number" [(ngModel)]="ac" (ngModelChange)="save()" />
+  <button (click)="addDiceset()">add diceset</button>
+  <button (click)="addAnimateObject()">add animate object</button>
+  <button (click)="reset()">reset</button>
+  <button (click)="clear()">clear</button>
+
+  <label>filter misses</label>
+  <input type="checkbox" [(ngModel)]="filterMiss" (ngModelChange)="save()" />
+  <button (click)="nextAction()">next action</button>
+</div>
+<div class="set-container">
+  <div *ngFor="let set of sets" class="set" [ngClass]="{'expired':set.duration && set.roundCounter > set.duration}">
+    Round {{ set.roundCounter }} - {{ set.name }}
+    <div style="width: 100%; display:flex; flex-direction: row;">
+      <button (click)="reset(set)" style="width: 100%;">reset</button>
+      <button (click)="toggleEdit(set)" style="width: 100%;" class="edit">toggleEdit</button>
+    </div>
+    <div *ngIf="set.editMode" class="editor">
+      <input type="text" [(ngModel)]="set.name" /><br />
+      <div>
+        <label>1d20+</label>
+        <input type="number" [(ngModel)]="set.hitModifier" class="number" />
+      </div>
+      <div>
+        <input type="number" [(ngModel)]="set.actionCount" class="number" />
+        x
+        <input type="number" [(ngModel)]="set.dieCount" class="number" />
+        d
+        <input type="number" [(ngModel)]="set.die" class="number" />
+        +
+        <input
+          type="number"
+          [(ngModel)]="set.dmgModifier"
+          class="number"
+        /><br />
+      </div>
+      <div>
+        for
+        <input type="number" [(ngModel)]="set.duration" class="number" />
+        rounds
+      </div>
+      <button (click)="remove(set)">remove</button>
+    </div>
+    <table>
+      <tr>
+        <th>hit</th>
+        <th>damage</th>
+      </tr>
+      <tr
+        *ngFor="let result of getResults(set.results)"
+        [ngClass]="{ miss: result.hitRoll < ac }"
+      >
+        <td>{{ result.hitRoll }}</td>
+        <td>{{ result.dmgRoll }}</td>
+      </tr>
+    </table>
+  </div>
+</div>
+<app-animate-object-generator
+  *ngIf="showAnimateObject"
+  (cancel)="showAnimateObject = false"
+  (done)="OnConfirm($event)"
+></app-animate-object-generator>

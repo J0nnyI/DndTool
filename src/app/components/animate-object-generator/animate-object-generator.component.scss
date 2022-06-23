@@ -1,0 +1,22 @@
+:host{
+  position: absolute;
+  left:0;
+  right:0;
+  top:0;
+  bottom: 0;
+  background: fade-out($color: lightgray, $amount: .6);
+  display:flex;
+}
+.container{
+  display:flex;
+  justify-self: center;
+  align-self: center;
+  flex-direction: column;
+  margin: auto;
+  padding: 16px;
+  background: lightgray;
+}
+
+.error{
+  background: lightcoral;
+}

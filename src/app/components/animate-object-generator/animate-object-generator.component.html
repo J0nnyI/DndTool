@@ -1,0 +1,39 @@
+<div class="container">
+  <div>
+    <label>level</label>
+    <input type="number" [(ngModel)]="level" />
+    points:<span [ngClass]="{'error':takenPoints() != getPoints()}">{{takenPoints()}}</span>/ {{ getPoints() }}
+    <div *ngIf="level < 5 || level > 9" class="error">level must be between 5 and 9</div>
+  </div>
+  <div class="objects">
+    <div>
+      <label>tiny</label>
+      <input type="number" [(ngModel)]="tinyCount" />
+      1pt
+    </div>
+    <div>
+      <label>small</label>
+      <input type="number" [(ngModel)]="smallCount" />
+      1pt
+    </div>
+    <div>
+      <label>medium</label>
+      <input type="number" [(ngModel)]="mediumCount" />
+      2pt
+    </div>
+    <div>
+      <label>large</label>
+      <input type="number" [(ngModel)]="largeCount" />
+      4pt
+    </div>
+    <div>
+      <label>huge</label>
+      <input type="number" [(ngModel)]="hugeCount" />
+      8pt
+    </div>
+  </div>
+  <div>
+    <button (click)="onDone()" [disabled]="hasError()">confirm</button>
+    <button (click)="cancel.emit()">cancel</button>
+  </div>
+</div>
