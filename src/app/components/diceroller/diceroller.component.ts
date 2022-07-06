@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Dice } from 'dice-typescript';
 
 export interface ActionSet {
   name: string;
@@ -27,8 +26,9 @@ export class DicerollerComponent implements OnInit {
   public ac: number = 15;
   public round: number = 0;
   public sets: ActionSet[] = [];
-  private dice = new Dice();
   public filterMiss = true;
+  public total = 0;
+  public average = 0;
   constructor() {}
   showAnimateObject: boolean = false;
   ngOnInit(): void {
@@ -58,21 +58,33 @@ export class DicerollerComponent implements OnInit {
     this.sets = this.sets.filter((x) => x != set);
     this.save();
   }
+  private rollDie(count:number,sides:number,bonus:number):number{
+    var res=0;
+    for(let i=0;i<count;i++)
+      res += Math.floor((Math.random()*sides)+1)+bonus
+    return res;
+  }
   nextAction() {
     this.round++;
+    this.total = 0;
     for (let set of this.sets) {
       set.roundCounter++;
       set.results = [];
       for (let cnt = 0; cnt < set.actionCount; cnt++) {
+        const hitRoll = this.rollDie(1,20,set.hitModifier);
+        const dmgRoll = this.rollDie(set.dieCount,set.die,set.dmgModifier);
+
         set.results = [
           ...set.results,
           {
-            hitRoll: this.dice.roll(`1d20+${set.hitModifier}`).total,
-            dmgRoll: this.dice.roll(
-              `${set.dieCount}d${set.die}+${set.dmgModifier}`
-            ).total,
+            hitRoll,
+            dmgRoll,
           },
         ].sort((a, b) => b.hitRoll - a.hitRoll);
+        if (hitRoll >= this.ac) {
+          this.total += dmgRoll;
+          this.average =Math.floor( ( this.average+dmgRoll)/2*100)/100
+        }
       }
     }
     this.save();
@@ -85,10 +97,10 @@ export class DicerollerComponent implements OnInit {
     this.showAnimateObject = false;
     this.save();
   }
-  reset(set:null|ActionSet=null) {
-    if(set){
-      set.roundCounter=0;
-      set.results=[];
+  reset(set: null | ActionSet = null) {
+    if (set) {
+      set.roundCounter = 0;
+      set.results = [];
       return;
     }
 
@@ -109,14 +121,14 @@ export class DicerollerComponent implements OnInit {
     else return results;
   }
   save() {
-    console.log("save");
+    console.log('save');
     localStorage.setItem(
       'sets',
       JSON.stringify({
         sets: this.sets,
         round: this.round,
         filterMiss: this.filterMiss,
-        ac:this.ac,
+        ac: this.ac,
       })
     );
   }
@@ -127,7 +139,7 @@ export class DicerollerComponent implements OnInit {
       this.sets = sets ?? [];
       this.round = round ?? 0;
       this.filterMiss = filterMiss ?? true;
-      this.ac = ac??15;
+      this.ac = ac ?? 15;
     } else this.addDiceset();
   }
 }
